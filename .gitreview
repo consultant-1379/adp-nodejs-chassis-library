@@ -1,0 +1,6 @@
+[gerrit]
+host=gerrit-gamma.gic.ericsson.se
+port=29418
+project=adp-nodejs-chassis-library
+defaultbranch=master
+defaultremote=origin

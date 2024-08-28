@@ -1,0 +1,25 @@
+:host {
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+#container {
+  font-size: 14pt; /* intentionally hardcoded like this with pt */
+  color: var(--text, #242424);
+  width: fit-content;
+  padding: var(--space-large, 16px);
+}
+
+.title {
+  display: flex;
+  vertical-align: middle;
+  font-size: 16pt; /* intentionally hardcoded like this with pt */
+  color: var(--text, #242424);
+  font-weight: var(--weight-medium);
+  margin-bottom: 1em;
+}
+
+eui-icon {
+  margin-right: var(--space-base);
+}

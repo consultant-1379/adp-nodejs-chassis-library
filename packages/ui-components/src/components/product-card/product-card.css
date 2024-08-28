@@ -1,0 +1,55 @@
+/* style goes here */
+:host {
+  --product-card-height: 80px;
+
+  height: var(--product-card-height);
+  display: block;
+}
+
+:host([is-compact-view]) {
+  --product-card-height: 48px;
+}
+
+a {
+  text-decoration: unset;
+  cursor: auto;
+  -webkit-user-select: text;
+  -moz-select: text;
+  -ms-select: text;
+  user-select: text;
+}
+
+.card {
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+  height: 100%;
+  overflow: visible;
+  background-color: var(--layer2);
+  transition: background-color 0.5s ease;
+}
+
+.card:hover,
+.card:focus {
+  background-color: var(--layer1);
+}
+
+.card:hover .productIconHolder,
+.card:focus .productIconHolder {
+  background-color: var(--blue-43);
+}
+
+.productIconHolder {
+  background-color: grey;
+  width: fit-content;
+  padding: 11px;
+  margin: var(--space-base, 8px);
+  margin-top: calc(-1 * var(--space-base, 8px));
+  margin-right: 16px;
+  border-radius: 3px;
+  transition: background-color 0.5s ease;
+}
+
+.productIconHolder-compact {
+  margin-top: calc(-1.6 * var(--space-base, 8px));
+}

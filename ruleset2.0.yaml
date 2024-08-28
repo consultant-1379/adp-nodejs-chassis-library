@@ -1,0 +1,477 @@
+modelVersion: 2.0
+
+docker-images:
+  - adp-release-auto: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-adp-release-auto:latest
+  - ci-toolbox: armdocker.rnd.ericsson.se/proj-eea-drop/ci-toolbox:latest
+  - docbuilder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/bob-docbuilder:latest
+  - nodejs-builder: armdocker.rnd.ericsson.se/proj-adp-cicd-drop/adp-nodejs-lts-builder-image:20.12.2-0
+
+var:
+  - version
+  - branch
+  - token
+  - rnd-token
+  - gitUser
+  - gitUserEmail
+
+env:
+  - PWD
+  - ARM_USER_SELI (default=notset) # Have to be set before run
+  - ARM_TOKEN_SELI (default=notset) # Have to be set before run
+  - ARM_USER_SERO (default=notset) # Have to be set before run
+  - ARM_TOKEN_SERO  (default=notset) # Have to be set before run
+  - REGISTRY
+  - SONAR_HOST (default=https://codeanalyzer2.internal.ericsson.com/)
+  - SONAR_LOGIN_TOKEN (default=notset) # Have to be set before run
+  - FOSSA_API_KEY (default=notset) # Have to be set before run
+  - SCAS_TOKEN (default=notset) # Have to be set before run
+  - MUNIN_TOKEN (default=notset)
+  - DRY_RUN (default=false)
+  - JENKINS_USER (default=notset)
+  - JENKINS_PASS (default=notset)
+
+properties:
+  - sonar-host-url: ${env.SONAR_HOST}
+  - sonar-report-file: report-task.txt
+  - jenkins-files-path: ci
+  - arm-auth-url: https://arm.seli.gic.ericsson.se/artifactory/api/npm/auth
+  - rnd-arm-auth-url: https://arm.rnd.ki.sw.ericsson.se/artifactory/api/npm/auth
+  - manual-dependency-file-name: plms/dependencies_manual.yaml
+  - auto-dependency-file-name: plms/dependencies_foss_auto.yaml
+  - dependency-full-file-name: .bob/dependency_merged_full.yaml
+  - fossa-server-endpoint: https://scasfossa.internal.ericsson.com
+  - fossa-project-name: fossa-eric-adp-nodejs-chassis-library
+  - fossa-team-name: BDGS-EEA-RelHandl
+  - fossa-report-name: .bob/fossa-report.json
+  - scas-product-id: 5533
+  - scas-version-id: 4959
+  - report-directory: .bob/reports
+  - dependencies-report-html: ${report-directory}/dependencies-report.html
+  - munin-sync-status-directory: .bob/munin-sync-status-files
+  - helm-chart-name: adp-nodejs-chassis-library
+  - jira-component-name: "NodeJS Chassis"
+  # list of all Docker registries used in this repo:
+  - docker-registry-default: armdocker.rnd.ericsson.se
+
+rules:
+  local-pipeline:
+    - rule: clean
+    - rule: npm-install
+    - rule: lint
+    - rule: build
+    - rule: test
+    - rule: sonar-scanner
+
+  clean:
+    - task: rm
+      cmd:
+        - rm -rf .bob/
+        - rm -rf build/
+
+  docker-login:
+    - task: login
+      cmd: echo ${env.ARM_TOKEN_SELI} | docker login ${docker-registry-default} -u ${env.ARM_USER_SELI} --password-stdin
+
+  npm-install:
+    - task: npm
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env ARM_NPM_TOKEN=${var.token}"
+        - "--env RND_ARM_NPM_TOKEN=${var.rnd-token}"
+      cmd:
+        - npm run ci:all
+
+  init-helper:
+    - task: version
+      docker-image: adp-release-auto
+      cmd:
+        - version-handler generate
+          --is-release false
+          --output version
+          --git-repo-path ./
+          --version-prefix-file "VERSION_PREFIX"
+        - sed -e 's@-.*$@@' .bob/var.version > .bob/var.semver
+    - task: get-branch
+      docker-image: adp-release-auto
+      cmd: git rev-parse --abbrev-ref HEAD > .bob/var.branch
+
+  init-common:
+    - task: init-helper:version
+    - rule: docker-login
+    - task: init-helper:get-branch
+    - rule: generate-npm-token
+
+  init-dev:
+    - rule: init-common
+
+  init-precodereview:
+    - rule: init-common
+
+  init-drop:
+    - rule: init-common
+
+  init-outdated-3pps-handler:
+    - rule: init-common
+
+  lint:
+    - task: commit-msg-lint
+      docker-image: nodejs-builder
+      cmd:
+        - node git-hooks/commit-msg.d/smi-commit-msg.js "$(git log --format=%B -n1)" || echo "Please install the validator git hook!"
+    - task: validate-jenkins-files
+      docker-image: ci-toolbox
+      docker-flags:
+        - "--env JENKINS_USER=${env.JENKINS_USER}"
+        - "--env JENKINS_PASS=${env.JENKINS_PASS}"
+      cmd: jenkinsfile_validator.sh --jenkinsfiles-path ${jenkins-files-path}
+    - task: markdownlint
+      docker-image: nodejs-builder
+      cmd:
+        # npm run lint:markdownlint does not work as the glob does not mach any md file in this env
+        - node_modules/.bin/markdownlint $(git ls-files -- \*\.md | cat | xargs)
+    - task: vale
+      docker-image: docbuilder
+      cmd:
+        - vale $(git ls-files -- \*\.md ':!:*dependency-overrides.md' | cat | xargs)
+    - task: jslint
+      docker-image: nodejs-builder
+      cmd:
+        - npm run lint:package-lock:all
+        - npm run lint:js
+        # TODO: add nested projects linting
+
+  sonar-scanner:
+    - task: scan
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env SONAR_SCANNER_OPTS='-Djavax.net.ssl.trustStore=/usr/lib64/jvm/java-11-openjdk-11/lib/security/cacerts'"
+      cmd:
+        - npm run sonar-scanner -- -Dsonar.host.url=${sonar-host-url} -Dsonar.login=${env.SONAR_LOGIN_TOKEN}
+
+  sonar-gate-check:
+    - task: sonar-quality-gate-check
+      docker-image: ci-toolbox
+      cmd:
+        - sonarQualityCheck .scannerwork/${sonar-report-file} ${env.SONAR_LOGIN_TOKEN}
+
+  generate-ts:
+    - task: generate-ts
+      docker-image: nodejs-builder
+      cmd:
+        - npm run checkjs:all
+
+  build:
+    - task: build
+      docker-image: nodejs-builder
+      cmd:
+        - npm run build:all
+
+  test:
+    - task: test
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--shm-size=2g"
+        - "--env PLAYWRIGHT_BROWSERS_PATH=${PWD#}/.bob/ms-playwright"
+      cmd:
+        - npm run test:full:all
+
+  generate-npm-token:
+    - task: generate-npm-token
+      cmd:
+        - echo $(curl --user ${env.ARM_USER_SELI}:${env.ARM_TOKEN_SELI} ${arm-auth-url} | xargs | cut -d" " -f3) > .bob/var.token
+        - echo $(curl --user ${env.ARM_USER_SERO}:${env.ARM_TOKEN_SERO} ${rnd-arm-auth-url} | xargs | cut -d" " -f3) > .bob/var.rnd-token
+
+  testPublish:
+    - task: move-git-creds-to-local #before safe- and testPublish steps, to provide all git configs from within the container
+      cmd:
+        - git config --get user.name > .bob/var.gitUser
+        - git config --get user.email > .bob/var.gitUserEmail
+        - git config --local user.name ${var.gitUser}
+        - git config --local user.email ${var.gitUserEmail}
+    - task: publish
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env ARM_NPM_TOKEN=${var.token}"
+        - "--env ARM_USER_SELI"
+        - "--env ARM_TOKEN_SELI"
+      cmd:
+        - npm run safePublish:dryRun:all
+    - task: clear-local-config
+      cmd:
+        - git config --unset --local user.name
+        - git config --unset --local user.email
+    - task: push-tags
+      cmd:
+        - git push origin --tags --dry-run
+
+  safePublish:
+    - task: move-git-creds-to-local
+      cmd:
+        - git config --get user.name > .bob/var.gitUser
+        - git config --get user.email > .bob/var.gitUserEmail
+        - git config --local user.name ${var.gitUser}
+        - git config --local user.email ${var.gitUserEmail}
+    - task: publish
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env ARM_NPM_TOKEN=${var.token}"
+        - "--env ARM_USER_SELI"
+        - "--env ARM_TOKEN_SELI"
+      cmd:
+        - npm run safePublish:all
+    - task: clear-local-config
+      cmd:
+        - git config --unset --local user.name
+        - git config --unset --local user.email
+    - task: push-tags
+      cmd:
+        - git push origin --tags
+
+  # **************
+  #
+  # 3PP/PLMS TASKS
+  #
+  # **************
+
+  # WARNING: RUN ONLY MANUALLY THIS RULE
+  scas-register:
+    - task: scas-request
+      docker-image: adp-release-auto
+      cmd: dependencies register
+        --dependencies ${auto-dependency-file-name}
+        --mimer
+        --scas
+        --scas-refresh-token ${env.SCAS_TOKEN}
+        --productid ${scas-product-id}
+        --versionid ${scas-version-id}
+
+  foss-name-mapping:
+    - task: get-name-mapping
+      docker-image: adp-release-auto
+      cmd: cp /usr/share/foss/resources/bazaar_name_map.csv .bob/bazaar_name_map.csv
+    - task: check-component-name-differences
+      docker-image: ci-toolbox
+      cmd: different-bazaar-names.js
+        --dependencies-path ${auto-dependency-file-name}
+        --map-file .bob/bazaar_name_map.csv
+
+  foss-helper:
+    - task: check-dependencies-file-is-changed
+      cmd: git diff HEAD^ -- ${auto-dependency-file-name} ${manual-dependency-file-name} | wc -l
+    - task: check-all-prim-number-filled
+      cmd: >
+        exit $(grep "prim: ''" ${auto-dependency-file-name} ${manual-dependency-file-name} | wc -l)
+    - task: check-dependencies-files
+      docker-image: adp-release-auto
+      cmd: dependencies validate
+        -d ${manual-dependency-file-name}
+        -d ${auto-dependency-file-name}
+        --allow-esw4
+    - task: dependency-update-with-scas
+      docker-image: adp-release-auto
+      cmd:
+        - dependencies update
+          --dependencies ${auto-dependency-file-name}
+          --scan-scas
+          --scas-refresh-token ${env.SCAS_TOKEN}
+          --sort
+          --allow-esw4
+          --version-scan-threshold 100
+    - task: dependency-update-with-scas-no-errors
+      docker-image: adp-release-auto
+      cmd: >
+        dependencies update
+        --dependencies ${auto-dependency-file-name}
+        --scan-scas
+        --scas-refresh-token ${env.SCAS_TOKEN}
+        --sort
+        --allow-esw4
+        --version-scan-threshold 100
+        || true
+    - task: dependency-update-with-scas-manual
+      docker-image: adp-release-auto
+      cmd:
+        - dependencies update
+          --dependencies ${manual-dependency-file-name}
+          --scan-scas
+          --scas-refresh-token ${env.SCAS_TOKEN}
+          --sort
+          --allow-esw4
+          --version-scan-threshold 100
+    - task: merge-dependencies
+      docker-image: adp-release-auto
+      cmd: dependencies merge
+        -d ${manual-dependency-file-name}
+        -d ${auto-dependency-file-name}
+        -o ${dependency-full-file-name}
+        --sort
+    - task: check-munin-sync-status
+      docker-image: adp-release-auto
+      cmd:
+        - rm -rf ${munin-sync-status-directory}
+        - mkdir -p ${munin-sync-status-directory}
+        - munin search-foss
+          -t ${env.MUNIN_TOKEN}
+          -d ${dependency-full-file-name}
+          -o ${munin-sync-status-directory}
+    - task: generate-dependencies-report
+      docker-image: adp-release-auto
+      cmd:
+        - mkdir -p ${report-directory}
+        - dependencies report
+          -d ${dependency-full-file-name}
+          -out ${dependencies-report-html}
+    - task: fix-format
+      docker-image: adp-release-auto
+      cmd: dependencies merge
+        -d ${auto-dependency-file-name}
+        -d plms/scripts/empty_dependency.yaml
+        -o ${auto-dependency-file-name}
+        --sort
+    - task: fix-format-manual
+      docker-image: adp-release-auto
+      cmd: dependencies merge
+        -d ${manual-dependency-file-name}
+        -d plms/scripts/empty_dependency.yaml
+        -o ${manual-dependency-file-name}
+        --sort
+    - task: update-munin-section
+      docker-image: adp-release-auto
+      cmd:
+        - mkdir -p ${munin-sync-status-directory}
+        - munin search-foss
+          -t ${env.MUNIN_TOKEN}
+          -d ${auto-dependency-file-name}
+          -o ${munin-sync-status-directory}
+    - task: migrate-dependencies
+      docker-image: adp-release-auto
+      cmd:
+        - dependencies migrate -d ${auto-dependency-file-name}
+        - dependencies migrate -d ${manual-dependency-file-name}
+
+  foss-analyze:
+    - task: analyze
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env FOSSA_API_KEY=${env.FOSSA_API_KEY}"
+      cmd:
+        - fossa analyze
+          --revision ${var.version}
+          --project ${fossa-project-name}
+          --endpoint ${fossa-server-endpoint}
+          --branch ${var.branch}
+          --team ${fossa-team-name}
+    - task: status-check
+      docker-image: adp-release-auto
+      docker-flags:
+        - "--env FOSSA_API_KEY=${env.FOSSA_API_KEY}"
+      cmd: fossa_scan_status_check -s ${fossa-server-endpoint} -f custom -p ${fossa-project-name} -r ${var.version} -t ${env.FOSSA_API_KEY} -dl 15
+    - task: report-attribution
+      docker-image: nodejs-builder
+      docker-flags:
+        - "--env FOSSA_API_KEY=${env.FOSSA_API_KEY}"
+      cmd: fossa report attribution
+        --endpoint ${fossa-server-endpoint}
+        --project ${fossa-project-name}
+        --revision ${var.version} --json > ${fossa-report-name}
+    - task: dependency-update-with-foss
+      docker-image: adp-release-auto
+      cmd: dependencies update
+        --fossa-report ${fossa-report-name}
+        --dependencies ${auto-dependency-file-name}
+        --sort
+        --allow-esw4
+    - task: skip-blocked-3pps
+      docker-image: nodejs-builder
+      cmd: node plms/scripts/skip-dependencies.js ${auto-dependency-file-name} plms/dependencies_blocked_by_fossa.yaml
+    - task: fix-primary
+      docker-image: nodejs-builder
+      cmd: node plms/scripts/fix-primary-from-package.js
+        ${auto-dependency-file-name}
+        packages/**/package.json
+    - task: fix-linking
+      docker-image: nodejs-builder
+      cmd: node plms/scripts/fix-linking.js
+        ${auto-dependency-file-name}
+        Dynamic
+    - task: enrich
+      docker-image: ci-toolbox
+      cmd: enrich.js
+        --dependencies-path ${auto-dependency-file-name}
+        --enrichment-path plms/dependencies_enrichment.yaml
+        --output-dependencies-path ${auto-dependency-file-name}
+    - task: foss-helper:fix-format
+
+  foss-register-help:
+    - task: filter-unregistered
+      docker-image: nodejs-builder
+      cmd:
+        - mkdir -p .bob/plms
+        - node plms/scripts/filter-unregistered.js
+          ${auto-dependency-file-name}
+          .bob/plms/dependencies_foss_unregistered.yaml
+        - node plms/scripts/change-name.js
+          .bob/plms/dependencies_foss_unregistered.yaml
+          scas
+    - task: dependency-update-with-scas-for-unregistered
+      docker-image: adp-release-auto
+      cmd: >
+        dependencies update
+        --dependencies .bob/plms/dependencies_foss_unregistered.yaml
+        --scan-scas
+        --scas-refresh-token ${env.SCAS_TOKEN}
+        --sort
+        --allow-esw4
+        --version-scan-threshold 100
+        || true
+    - task: rename-unregistered
+      docker-image: nodejs-builder
+      cmd:
+        - node plms/scripts/change-name.js
+          .bob/plms/dependencies_foss_unregistered.yaml
+          fossa
+    - task: merge-unregistered
+      docker-image: adp-release-auto
+      cmd: dependencies merge
+        -d .bob/plms/dependencies_foss_unregistered.yaml
+        -d ${auto-dependency-file-name}
+        -o ${auto-dependency-file-name}
+        --sort
+    - task: fill-missing-bazaar-src
+      docker-image: nodejs-builder
+      cmd:
+        - node plms/scripts/fill-missing-bazaar-src.js
+          ${auto-dependency-file-name}
+    - task: fix-license-stako-src
+      docker-image: ci-toolbox
+      cmd: fix-stako-license.js
+        --dependencies-path ${auto-dependency-file-name}
+        --output-dependencies-path ${auto-dependency-file-name}
+    - task: foss-helper:fix-format
+    - task: foss-helper:update-munin-section
+    - task: foss-helper:check-dependencies-files
+
+  foss-analyze-local:
+    - rule: clean
+    - rule: init-dev
+    - rule: foss-analyze
+    - rule: foss-register-help
+
+  munin:
+    - task: skip-blocked-3pps-munin-sync
+      docker-image: nodejs-builder
+      cmd: node plms/scripts/skip-dependencies.js ${dependency-full-file-name} plms/dependencies_blocked_by_mimer.yaml
+    - task: skip-blocked-3pps-munin-update
+      docker-image: nodejs-builder
+      cmd: node plms/scripts/skip-dependencies.js ${auto-dependency-file-name} plms/dependencies_blocked_by_mimer.yaml
+
+  # *********
+  #
+  # DOC TASKS
+  #
+  # *********
+
+  generate-docs:
+    - task: generate-api-docs
+      docker-image: nodejs-builder
+      cmd: npm run generate-api-docs

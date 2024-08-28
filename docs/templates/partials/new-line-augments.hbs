@@ -1,0 +1,9 @@
+{{#if returns~}}
+  {{#if returns.0.description~}}
+    \
+  {{~else~}}
+    {{~>new-line-returns~}}
+  {{/if~}}
+{{else~}}
+  {{~>new-line-returns~}}
+{{/if~}}

@@ -1,0 +1,83 @@
+/* style goes here */
+:host {
+  --custom-card-height: 100px;
+
+  display: block;
+  position: relative;
+  height: var(--custom-card-height);
+}
+
+:host([is-compact-view]) {
+  --custom-card-height: 36px;
+}
+
+a {
+  text-decoration: unset;
+}
+
+.card {
+  width: 100%;
+  cursor: default;
+  position: relative;
+  margin: 0;
+  height: 100%;
+  overflow: visible;
+}
+
+.card.expanded {
+  height: auto;
+  position: absolute;
+  box-shadow: 0 5px 20px var(--code-background);
+}
+
+.expandContainer {
+  display: block;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.icons {
+  height: var(--space-xl, 24px);
+  position: static;
+  margin-top: 0;
+}
+
+.icon {
+  opacity: 0.7;
+  margin-left: var(--space-small, 4px);
+}
+
+.icon:hover,
+.accordion:hover {
+  opacity: 1;
+}
+
+.favorite-icon {
+  margin-left: 2px;
+}
+
+.accordion {
+  opacity: 0.7;
+  padding-right: var(--space-base, 8px);
+  width: var(--space-large, 16px);
+}
+
+eui-tooltip {
+  font-weight: var(--weight-regular);
+  font-size: 13px;
+}
+
+.tooltip > .message {
+  text-align: left;
+  width: 260px;
+}
+
+.tooltip > .subtitle {
+  margin-bottom: var(--space-base, 8px);
+}

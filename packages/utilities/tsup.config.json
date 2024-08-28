@@ -1,0 +1,6 @@
+{
+  "entry": ["src/index.js", "src/network/networkUtil.js"],
+  "format": ["cjs"],
+  "outDir": "cjs",
+  "minify": true
+}

@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.box {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.search-item {
+  display: flex;
+  flex: 1;
+}
+
+.search-component {
+  max-width: 680px;
+}
+
+.control-item {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.controls {
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: calc(100% - 350px - var(--space-small));
+}
+
+.controls > * {
+  margin-left: var(--space-base, 8px);
+}
+
+:host([is-compact-view]) .search-item {
+  margin-bottom: var(--space-base);
+  flex-basis: 100%;
+}
+
+:host([is-compact-view]) .control-item {
+  flex: 1;
+}
+
+:host([is-compact-view]) .controls {
+  justify-content: flex-end;
+  width: 100%;
+}
+
+:host([is-compact-view]) .controls > *:first-child {
+  margin-left: 0;
+}

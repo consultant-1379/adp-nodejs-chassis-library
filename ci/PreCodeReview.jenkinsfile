@@ -1,0 +1,174 @@
+pipeline {
+  agent {
+    node('presentation')
+  }
+  options {
+    ansiColor('xterm')
+    timeout(time: 1, unit: 'HOURS')
+    buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+  }
+  stages {
+    stage('Prepare') {
+      steps {
+        sh 'bob --dryrun $(bob -lq)'
+      }
+    }
+    stage('Clean') {
+      steps {
+        sh 'bob clean'
+      }
+    }
+    stage('Set Bob variables') {
+      steps {
+        withCredentials([
+          usernamePassword(credentialsId: 'arm-seli-eeaprodart-token', usernameVariable: 'ARM_USER_SELI', passwordVariable: 'ARM_TOKEN_SELI'),
+          usernamePassword(credentialsId: 'arm-sero-eeaprodart-token', usernameVariable: 'ARM_USER_SERO', passwordVariable: 'ARM_TOKEN_SERO')
+        ]) {
+          sh 'bob init-precodereview'
+        }
+      }
+    }
+    stage('Install dependencies') {
+      steps {
+        sh 'bob npm-install'
+      }
+    }
+    stage('Lint') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'jenkins-api-token', usernameVariable: 'JENKINS_USER', passwordVariable: 'JENKINS_PASS')]) {
+          sh 'bob lint'
+        }
+      }
+    }
+    stage('FOSS handling') {
+      stages {
+        stage('Lint FOSS') {
+          steps {
+            sh 'bob foss-helper:check-dependencies-files'
+          //add bob munin:validate-product-structure after structure validation is implemented
+          }
+        }
+        stage('Analyze FOSS') {
+          steps {
+            withCredentials([string(credentialsId: 'fossa-token', variable: 'FOSSA_API_KEY')]) {
+              sh 'bob foss-analyze'
+            }
+          }
+        }
+        stage('Check Prim numbers') {
+          steps {
+            sh 'bob foss-helper:check-all-prim-number-filled'
+          }
+        }
+        stage('Merge manual & auto dependencies') {
+          steps {
+            sh 'bob foss-helper:merge-dependencies'
+          }
+        }
+        stage('Skip blocked Munin 3pp from Munin Sync') {
+          steps {
+            withCredentials([string(credentialsId: 'mimer-token-production', variable: 'MUNIN_TOKEN')]) {
+              sh 'bob munin:skip-blocked-3pps-munin-sync'
+            }
+          }
+        }
+        stage('Check Munin sync status') {
+          steps {
+            withCredentials([string(credentialsId: 'mimer-token-production', variable: 'MUNIN_TOKEN')]) {
+              sh 'bob foss-helper:check-munin-sync-status'
+            }
+          }
+        }
+        stage('Skip blocked Munin 3pp from Munin Update') {
+          steps {
+            withCredentials([string(credentialsId: 'mimer-token-production', variable: 'MUNIN_TOKEN')]) {
+              sh 'bob munin:skip-blocked-3pps-munin-update'
+            }
+          }
+        }
+        stage('Update foss list with actual mimer') {
+          steps {
+            withCredentials([string(credentialsId: 'mimer-token-production', variable: 'MUNIN_TOKEN')]) {
+              sh 'bob foss-helper:update-munin-section'
+            }
+          }
+        }
+      }
+    }
+    stage('Build source code') {
+      steps {
+        sh 'bob build'
+      }
+    }
+    stage('Test source code') {
+      steps {
+        ansiColor('css') {
+          sh 'bob test'
+        }
+      }
+    }
+    stage('Generate TS') {
+      steps {
+        sh 'bob generate-ts'
+      }
+    }
+    stage('Test publish') {
+      steps {
+        withCredentials([
+          usernamePassword(credentialsId: 'arm-seli-eeaprodart-token', usernameVariable: 'ARM_USER_SELI', passwordVariable: 'ARM_TOKEN_SELI')
+        ]) {
+          ansiColor('xterm') {
+            sh 'bob testPublish'
+          }
+        }
+      }
+    }
+    stage('Sonar scanner') {
+      steps {
+          withCredentials([string(credentialsId: 'platform-sonar-token', variable: 'SONAR_LOGIN_TOKEN')]) {
+          ansiColor('xterm') {
+            sh 'bob sonar-scanner'
+            sh 'bob sonar-gate-check'
+          }
+      }
+      }
+    }
+  }
+  post {
+    always {
+      archiveArtifacts 'packages/auth/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/base/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/database-pg/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/faultHandler/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/license-manager/test/reports/mochawesome/**'
+      // archiveArtifacts 'packages/kubernetes/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/pm-service/test/reports/mochawesome/**'
+      archiveArtifacts 'packages/utilities/test/reports/mochawesome/**'
+      archiveArtifacts artifacts: '.bob/munin-sync-status-files/*.json', allowEmptyArchive: true
+      publishHTML(target: [
+        allowMissing: false,
+        alwaysLinkToLastBuild: false,
+        keepAll: true,
+        reportDir: 'packages/base/test/reports/mochawesome/',
+        reportFiles: 'mochawesome.html',
+        reportName: 'WS Endpoint Test Report'
+      ])
+      publishHTML(target: [
+        allowMissing: false,
+        alwaysLinkToLastBuild: false,
+        keepAll: true,
+        reportDir: 'packages/ui-components/coverage/lcov-report',
+        reportFiles: 'index.html',
+        reportName: 'UI Components Test Coverage Report'
+      ])
+      publishHTML(target: [
+        allowMissing: false,
+        alwaysLinkToLastBuild: false,
+        keepAll: true,
+        reportDir: 'packages/ui-settings/coverage/lcov-report',
+        reportFiles: 'index.html',
+        reportName: 'UI Settings Plugin Test Coverage Report'
+      ])
+    }
+  }
+}

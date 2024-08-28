@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "$id": "http://adp.ericsson.com/ui.config.json",
+  "type": "object",
+  "desscription": "File descriptor for UI micro front-ends.\nThis file includes all apps, components and groups supported by UI micro front-ends.\nThis file should be named as 'config.json' and should be accesible from the service root URL.\n",
+  "properties": {
+    "version": {
+      "$id": "http://adp.ericsson.com/ui.config.json#/properties/version",
+      "type": "string",
+      "description": "Schema version of the config.json."
+    },
+    "apps": {
+      "$id": "http://adp.ericsson.com/ui.config.json#/properties/apps",
+      "type": "array",
+      "description": "List of applications available as part of the service.",
+      "items": {
+        "type": "object"
+      }
+    },
+    "groups": {
+      "$id": "http://adp.ericsson.com/ui.config.json#/properties/groups",
+      "type": "array",
+      "description": "List of groups available as part of the service.",
+      "items": {
+        "type": "object"
+      }
+    },
+    "components": {
+      "$id": "http://adp.ericsson.com/ui.config.json#/properties/components",
+      "type": "array",
+      "description": "List of components available as part of the service.",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

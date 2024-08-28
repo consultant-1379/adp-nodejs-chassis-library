@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "checkJs": true,
+    "moduleResolution": "node",
+    "alwaysStrict": true,
+    "strictNullChecks": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "outFile": "bundle",
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["packages/*/src/**/*.js"],
+  "exclude": [
+    "packages/*/src/**/__tests__/",
+    "packages/ui-components/src/**/*.js",
+    "packages/ui-settings/src/**/*.js",
+    "packages/*/test",
+    "node_modules",
+    "**/node_modules/**"
+  ]
+}

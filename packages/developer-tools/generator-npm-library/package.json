@@ -1,0 +1,25 @@
+{
+  "name": "@adp/generator-npm-library",
+  "version": "0.1.2",
+  "description": "Generator for generating npm libraries",
+  "files": [
+    "generators"
+  ],
+  "main": "index.js",
+  "types": "bundle.d.ts",
+  "scripts": {
+    "safePublish": "node ../../../scripts/safePublish.js developer-tools/generator-npm-library",
+    "checkjs": "tsc"
+  },
+  "dependencies": {
+    "yeoman-generator": "^5.5.2"
+  },
+  "publishConfig": {
+    "registry": "https://arm.seli.gic.ericsson.se/artifactory/api/npm/proj-adp-nodejs-chassis-library-npm-local/"
+  },
+  "overrides": {
+    "@octokit/request": {
+      "node-fetch": "3.3.1"
+    }
+  }
+}

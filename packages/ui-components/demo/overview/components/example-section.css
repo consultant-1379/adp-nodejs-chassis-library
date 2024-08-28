@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+.example-columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.example-columns > div {
+  width: calc(50% - var(--space-xxl, 32px) / 2);
+}

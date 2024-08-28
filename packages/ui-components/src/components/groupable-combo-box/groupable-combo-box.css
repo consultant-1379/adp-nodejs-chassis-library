@@ -1,0 +1,46 @@
+:host {
+  display: block;
+
+  /* current EDS style, it will be updated in EUI-SDK */
+  --menu-item-font-size: 12px;
+
+  font-size: var(--menu-item-font-size);
+  width: 100%;
+}
+
+.grouped-menu-item-header {
+  font-weight: bold;
+}
+
+/* divider */
+.grouped-menu-item-header::after {
+  content: '';
+  position: absolute;
+  left: var(--space-base, 8px);
+  right: var(--space-base, 8px);
+  height: 1px;
+  bottom: 0;
+  border-bottom: 1px solid #8c8c8c;
+}
+
+/* override as disabled state is used in group header */
+eui-menu-item[disabled] {
+  opacity: 1;
+}
+
+eui-menu-item {
+  position: relative;
+}
+
+eui-menu {
+  max-width: 350px;
+}
+
+.cross-icon {
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.dropdown {
+  width: 100%;
+}

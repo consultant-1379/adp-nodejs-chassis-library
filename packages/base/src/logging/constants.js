@@ -1,0 +1,80 @@
+const CONSTANTS = {
+  METADATA_ID: 'kubernetes@170619',
+  SYSLOG_TYPE: 'RFC5424',
+  DEFAULT_CATEGORY: 'default',
+  DEFAULT_LOG: {
+    enabled: true,
+    defaultLogLevel: 'info',
+    serviceName: 'Service',
+    stdout: {
+      enabled: true,
+      facility: 'local0',
+    },
+    filelog: {
+      enabled: false,
+      logDirName: 'logs/service',
+      logFileName: 'auditService',
+      maxSize: 5120,
+      maxFiles: 5,
+    },
+    syslog: {
+      enabled: false,
+      syslogHost: 'eric-log-transformer',
+      syslogFacility: 'local0',
+      tls: {
+        enabled: false,
+      },
+    },
+    jsonTCPLog: {
+      enabled: false,
+      host: 'eric-log-transformer',
+      facility: 'local0',
+      tls: {
+        enabled: false,
+      },
+    },
+  },
+  LOG_LEVELS: {
+    critical: 2,
+    error: 3,
+    warning: 4,
+    info: 6,
+    debug: 7,
+  },
+  LOG_COLORS: {
+    critical: 'magenta',
+    error: 'red',
+    warning: 'yellow',
+    info: 'blue',
+    debug: 'white',
+  },
+  FACILITIES: {
+    kern: { code: '0', name: 'kernel messages' },
+    user: { code: '1', name: 'user-level messages' },
+    mail: { code: '2', name: 'mail system' },
+    daemon: { code: '3', name: 'system daemons' },
+    auth: { code: '4', name: 'security/authorization messages' },
+    syslog: { code: '5', name: 'messages generated internally by syslogd' },
+    lpr: { code: '6', name: 'line printer subsystem' },
+    news: { code: '7', name: 'network news subsystem' },
+    uucp: { code: '8', name: 'UUCP subsystem' },
+    clock: { code: '9', name: 'clock daemon' },
+    sec: { code: '10', name: 'security/authorization messages' },
+    ftp: { code: '11', name: 'FTP daemon' },
+    ntp: { code: '12', name: 'NTP subsystem' },
+    audit: { code: '13', name: 'log audit' },
+    alert: { code: '14', name: 'log alert' },
+    clock2: { code: '15', name: 'clock daemon (note 2)' },
+    local0: { code: '16', name: 'local use 0 (local0)' },
+    local1: { code: '17', name: 'local use 1 (local1)' },
+    local2: { code: '18', name: 'local use 2 (local2)' },
+    local3: { code: '19', name: 'local use 3 (local3)' },
+    local4: { code: '20', name: 'local use 4 (local4)' },
+    local5: { code: '21', name: 'local use 5 (local5)' },
+    local6: { code: '22', name: 'local use 6 (local6)' },
+    local7: { code: '23', name: 'local use 7 (local7)' },
+  },
+  WAIT_FOR_LOG_SERVER: 60000, // 60 secs
+};
+
+export default CONSTANTS;

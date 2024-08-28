@@ -1,0 +1,8 @@
+{
+  "version": "0.1",
+  "serviceName": "Service-1",
+  "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "additionalInformation": {
+    "type": "simple"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "name": "@adp/ui-components",
+  "version": "0.1.37",
+  "description": "Re-usable UI elements",
+  "main": "./src/index.js",
+  "type": "module",
+  "types": "bundle.d.ts",
+  "files": [
+    "src"
+  ],
+  "exports": {
+    "import": "./src/index.js",
+    "default": "./src/index.cjs"
+  },
+  "publishConfig": {
+    "registry": "https://arm.seli.gic.ericsson.se/artifactory/api/npm/proj-adp-nodejs-chassis-library-npm-local/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://gerrit-gamma.gic.ericsson.se:29418/EEA/adp-nodejs-chassis-library"
+  },
+  "scripts": {
+    "test:install": "playwright install firefox chromium webkit",
+    "test": "web-test-runner --playwright --browsers firefox chromium",
+    "test:all": "web-test-runner --playwright --browsers chromium firefox webkit",
+    "test:watch": "web-test-runner --watch --playwright --browsers chromium",
+    "test:ui": "npm run test:install && npm run test",
+    "test:full:timeout": "npm run test:ui",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "format": "npm run format:eslint && npm run format:prettier",
+    "lint:eslint": "eslint --ext .js,.html . --ignore-path .eslintignore",
+    "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .eslintignore",
+    "lint:prettier": "prettier \"**/*.{js,html}\" --check --ignore-path .eslintignore",
+    "format:prettier": "prettier \"**/*.{js,html}\" --write --ignore-path .eslintignore",
+    "start": "web-dev-server",
+    "safePublish": "node ../../scripts/safePublish.js ui-components",
+    "build:dev": "rollup -c",
+    "build:prod": "rollup -c --environment BUILD:production",
+    "build:cjs": "tsup ./build/src/index.js --format cjs --outDir src",
+    "build": "npm run build:prod && npm run build:cjs",
+    "checkjs": "echo 'no typescript step is defined'"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@eui/app": "^1.0.0",
+    "@eui/base": "^1.7.8",
+    "@eui/component": "^1.0.2",
+    "@eui/container": "^1.1.0",
+    "@eui/layout": "^1.1.1",
+    "@eui/lit-component": "^1.0.0",
+    "@eui/navigation-menu": "^1.1.2",
+    "@eui/theme": "^1.0.1",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@babel/core": "7.24.4",
+    "@babel/eslint-parser": "7.24.1",
+    "@eui/rollup-config-generator": "^1.2.0",
+    "@open-wc/eslint-config": "12.0.3",
+    "@open-wc/testing": "^4.0.0",
+    "@open-wc/testing-helpers": "^3.0.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/node": "^20.12.7",
+    "@web/dev-server": "^0.4.4",
+    "@web/dev-server-import-maps": "^0.2.0",
+    "@web/dev-server-rollup": "^0.6.1",
+    "@web/test-runner": "^0.18.1",
+    "@web/test-runner-junit-reporter": "0.7.1",
+    "@web/test-runner-playwright": "^0.11.0",
+    "@webcomponents/scoped-custom-element-registry": "^0.0.9",
+    "es-module-shims": "1.9.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-lit-a11y": "4.1.2",
+    "glob": "^10.3.12",
+    "mochawesome-report-generator": "^6.2.0",
+    "prettier": "3.2.5",
+    "prismjs": "^1.29.0",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "rollup-plugin-string": "^3.0.0",
+    "sinon": "17.0.1",
+    "tsup": "^8.0.2",
+    "urlpattern-polyfill": "10.0.0"
+  }
+}

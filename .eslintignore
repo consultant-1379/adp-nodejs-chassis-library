@@ -1,0 +1,3 @@
+generator-npm-library/
+packages/**/dist/**
+packages/**/build/**

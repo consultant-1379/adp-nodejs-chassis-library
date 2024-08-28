@@ -1,0 +1,13 @@
+{
+  "entry": [
+    "src/index.js",
+    "src/configQuery/configQueryService.js",
+    "src/k8sQuery/k8sQueryService.js",
+    "src/manualConfigHandler/manualServiceConfigHandler.js",
+    "src/serviceCollection/serviceCollection.js",
+    "src/synchronization/synchronizationService.js"
+  ],
+  "format": ["cjs"],
+  "outDir": "cjs",
+  "minify": true
+}

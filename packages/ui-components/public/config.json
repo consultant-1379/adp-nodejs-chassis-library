@@ -1,0 +1,126 @@
+{
+  "apps": [
+    {
+      "name": "main-page",
+      "module": "main-page",
+      "displayName": "Component page",
+      "type": "euisdk",
+      "route": "main-page",
+      "childNames": [
+        "action-bar",
+        "app-card",
+        "base-link",
+        "card-container",
+        "card-menu",
+        "custom-layout-card",
+        "error-message",
+        "error-message-content",
+        "groupable-combo-box",
+        "icon-dropdown",
+        "list-container",
+        "list-item",
+        "product-card",
+        "search-component"
+      ]
+    },
+    {
+      "name": "action-bar",
+      "module": "main-page",
+      "displayName": "e-action-bar",
+      "route": "action-bar",
+      "isComponent": true
+    },
+    {
+      "name": "app-card",
+      "module": "main-page",
+      "displayName": "e-app-card",
+      "route": "app-card",
+      "isComponent": true
+    },
+    {
+      "name": "base-link",
+      "module": "main-page",
+      "displayName": "e-base-link",
+      "route": "base-link",
+      "isComponent": true
+    },
+    {
+      "name": "card-container",
+      "module": "main-page",
+      "displayName": "e-card-container",
+      "route": "card-container",
+      "isComponent": true
+    },
+    {
+      "name": "card-menu",
+      "module": "main-page",
+      "displayName": "e-card-menu",
+      "route": "card-menu",
+      "isComponent": true
+    },
+    {
+      "name": "custom-layout-card",
+      "module": "main-page",
+      "displayName": "e-custom-layout-card",
+      "route": "custom-layout-card",
+      "isComponent": true
+    },
+    {
+      "name": "error-message",
+      "module": "main-page",
+      "displayName": "e-error-message",
+      "route": "error-message",
+      "isComponent": true
+    },
+    {
+      "name": "error-message-content",
+      "module": "main-page",
+      "displayName": "e-error-message-content",
+      "route": "error-message-content",
+      "isComponent": true
+    },
+    {
+      "name": "groupable-combo-box",
+      "module": "main-page",
+      "displayName": "e-groupable-combo-box",
+      "route": "groupable-combo-box",
+      "isComponent": true
+    },
+    {
+      "name": "icon-dropdown",
+      "module": "main-page",
+      "displayName": "e-icon-dropdown",
+      "route": "icon-dropdown",
+      "isComponent": true
+    },
+    {
+      "name": "list-container",
+      "module": "main-page",
+      "displayName": "e-list-container",
+      "route": "list-container",
+      "isComponent": true
+    },
+    {
+      "name": "list-item",
+      "module": "main-page",
+      "displayName": "e-list-item",
+      "route": "list-item",
+      "isComponent": true
+    },
+    {
+      "name": "product-card",
+      "module": "main-page",
+      "displayName": "e-product-card",
+      "route": "product-card",
+      "isComponent": true
+    },
+    {
+      "name": "search-component",
+      "module": "main-page",
+      "displayName": "e-search-component",
+      "route": "search-component",
+      "isComponent": true
+    }
+  ],
+  "components": []
+}

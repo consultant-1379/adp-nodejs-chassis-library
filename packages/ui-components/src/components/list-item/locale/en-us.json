@@ -1,0 +1,10 @@
+{
+  "EXTERNAL_APP_TOOLTIP": "Open external application",
+  "FAVORITE": "Favorite",
+  "VIEW_DESCRIPTION": "View description",
+  "TOGGLE_FAVORITE_TOOLTIP": "Toggle favorite (F)",
+  "MORE_INFO_TOOLTIP": "More info",
+  "EXPAND_ITEM": "Expand to show child apps (E)",
+  "CONTRACT_ITEM": "Close (E)",
+  "NO_DETAILS": "No more details"
+}

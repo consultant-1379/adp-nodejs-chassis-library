@@ -1,0 +1,10 @@
+{
+  "useHttps": false,
+  "appName": "Lorem ipsum",
+  "label": "default",
+  "logger": {
+    "settings": {
+      "enabled": false
+    }
+  }
+}

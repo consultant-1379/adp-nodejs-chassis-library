@@ -1,0 +1,10 @@
+{{#if name}}{{#sig~}}
+{{{@depOpen}~}}
+<code>
+{{~#if @prefix}}{{@prefix}} {{/if~}}
+{{@parent~}}
+{{@accessSymbol}}{{#if (isEvent)}}"{{{name}}}"{{else}}{{{escape name}}}{{/if~}}
+{{#if @methodSign}}{{#if (isEvent)}} {{@methodSign}}{{else}}{{@methodSign}}{{/if}}{{/if~}}
+</code>
+{{{@depClose}~}}
+{{~/sig}}{{/if}}

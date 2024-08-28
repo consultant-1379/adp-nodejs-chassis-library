@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://adp.ericsson.com/config.main.json",
+  "description": "Compound config.",
+  "type": "object",
+  "properties": {
+    "mainConfig": {
+      "$ref": "http://adp.ericsson.com/config.json"
+    },
+    "mainConfigRelative": {
+      "$ref": "config.json"
+    }
+  },
+  "required": ["mainConfig"],
+  "additionalProperties": false
+}

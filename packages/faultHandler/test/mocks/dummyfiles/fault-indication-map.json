@@ -1,0 +1,10 @@
+{
+  "SAMPLE": {
+    "serviceName": "eric-adp-gui-aggregator-service",
+    "faultName": "sample_fault_for_test_only",
+    "severity": "Warning",
+    "description": "default sample fault indication description",
+    "expiration": 0,
+    "createdAt": "2022-09-07T18:47:17.612Z"
+  }
+}

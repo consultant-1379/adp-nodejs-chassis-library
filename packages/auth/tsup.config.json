@@ -1,0 +1,15 @@
+{
+  "entry": [
+    "src/index.js",
+    "src/cookieParser/authTokenParser.js",
+    "src/cookieParser/authHandler.js",
+    "src/iam/UserInfo.js",
+    "src/utils/dateFormatter.js",
+    "src/userpermission/userPermissionHandler.js",
+    "src/cookieParser/cookieParserMiddleware.js",
+    "src/cookieParser/cookieParser.js"
+  ],
+  "format": ["cjs"],
+  "outDir": "cjs",
+  "minify": true
+}

@@ -1,0 +1,85 @@
+{
+  "name": "@adp/auth",
+  "version": "0.1.20",
+  "description": "Package with Node.js microservice auth modules",
+  "type": "module",
+  "types": "bundle.d.ts",
+  "main": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "default": "./cjs/index.cjs"
+    },
+    "./AuthTokenParser": {
+      "import": "./src/cookieParser/authTokenParser.js",
+      "default": "./cjs/cookieParser/authTokenParser.cjs"
+    },
+    "./AuthHandler": {
+      "import": "./src/cookieParser/authHandler.js",
+      "default": "./cjs/cookieParser/authHandler.cjs"
+    },
+    "./IamUserInfo": {
+      "import": "./src/iam/UserInfo.js",
+      "default": "./cjs/iam/UserInfo.cjs"
+    },
+    "./userPermissionHandler": {
+      "import": "./src/userpermission/userPermissionHandler.js",
+      "default": "./cjs/userpermission/userPermissionHandler.cjs"
+    },
+    "./dateFormatter": {
+      "import": "./src/utils/dateFormatter.js",
+      "default": "./cjs/utils/dateFormatter.cjs"
+    },
+    "./getCookieParserMiddleware": {
+      "import": "./src/cookieParser/cookieParserMiddleware.js",
+      "default": "./cjs/cookieParser/cookieParserMiddleware.cjs"
+    },
+    "./cookieParser": {
+      "import": "./src/cookieParser/cookieParser.js",
+      "default": "./cjs/cookieParser/cookieParser.cjs"
+    }
+  },
+  "scripts": {
+    "test:timeout": "npm-run-all -p -r test timeout",
+    "timeout": "node ../../scripts/timeout.js -- 300000",
+    "test": "cross-env NODE_ENV=test mocha",
+    "test:generateReport:timeout": "npm-run-all -p -r test:generateReport timeout",
+    "test:full:timeout": "npm-run-all -p -r test:full timeout",
+    "test:generateReport": "cross-env NODE_ENV=test mocha --reporter mochawesome --reporter-options inline=true,reportDir=test/reports/mochawesome",
+    "test:coverage": "c8 --reporter=lcov --reporter=text --report-dir=test/reports/coverage cross-env NODE_ENV=test mocha",
+    "test:full": "c8 --reporter=lcov --reporter=text --report-dir=test/reports/coverage cross-env NODE_ENV=test mocha --reporter mochawesome --reporter-options inline=true,reportDir=test/reports/mochawesome",
+    "safePublish": "node ../../scripts/safePublish.js auth",
+    "checkjs": "tsc",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@adp/utilities": "^0.1.8",
+    "jsonschema": "^1.4.1",
+    "jwt-decode": "^4.0.0",
+    "luxon": "^3.4.4"
+  },
+  "devDependencies": {
+    "c8": "^9.1.0",
+    "chai": "^5.1.0",
+    "cross-env": "^7.0.3",
+    "mocha": "^10.4.0",
+    "mochawesome": "^7.1.3",
+    "npm-run-all": "^4.1.5",
+    "sinon": "^17.0.1",
+    "testdouble": "^3.20.1",
+    "tsup": "^8.0.2"
+  },
+  "publishConfig": {
+    "registry": "https://arm.seli.gic.ericsson.se/artifactory/api/npm/proj-adp-nodejs-chassis-library-npm-local/"
+  },
+  "files": [
+    "src/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://gerrit-gamma.gic.ericsson.se:29418/EEA/adp-nodejs-chassis-library",
+    "directory": "packages/auth/"
+  },
+  "author": "",
+  "license": "ISC"
+}

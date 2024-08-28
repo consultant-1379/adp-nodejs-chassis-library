@@ -1,0 +1,79 @@
+modelVersion: 2
+fosses:
+- product_number: CTX1030642
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    JSON object validation using JSON schemas.
+- product_number: CAX1055958
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Node.js is an open-source, cross-platform, JavaScript runtime environment. It executes JavaScript code outside of a browser.
+- product_number: CTX1033101
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    express middleware with popular prometheus metrics in one bundle
+- product_number: CTX1027102
+  license: Apache-2.0
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Client for prometheus
+- product_number: CAX1058589
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Minimal and efficient cross-platform file watching library
+- product_number: CAX1057487
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Lodash modular utilities.
+- product_number: CTX1030638
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Syslog parser and producer
+- product_number: CTX1029166
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Definitions of levels for logging purposes & shareable Symbol constants.
+- product_number: CAX1059445
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    A logger for just about everything.
+- product_number: CTX1029173
+  license: MIT
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    Base stream implementations for winston@3 and up.
+- product_number: CTX1030092
+  license: Apache-2.0
+  linking: Dynamic
+  obligation: |
+    Including the full license text in a prominent place with the software when the FOSS is distributed
+  usage: |
+    NodeJS client for kubernetes

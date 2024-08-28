@@ -1,0 +1,6 @@
+{
+  "mainConfig": {
+    "version": "1.0",
+    "serviceName": "dummy-app"
+  }
+}

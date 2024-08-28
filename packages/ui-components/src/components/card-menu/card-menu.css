@@ -1,0 +1,29 @@
+:host {
+  display: block;
+}
+
+#menu-icon {
+  opacity: 0.8;
+}
+
+#menu-icon:hover {
+  opacity: 1;
+}
+
+.menu-item-title {
+  font-weight: var(--weight-regular);
+}
+
+.card-menu-tooltip {
+  display: none;
+  font-weight: var(--weight-regular);
+}
+
+.card-menu-tooltip > .message {
+  text-align: left;
+  width: 260px;
+}
+
+.card-menu-tooltip > .subtitle {
+  margin-bottom: var(--space-base, 8px);
+}

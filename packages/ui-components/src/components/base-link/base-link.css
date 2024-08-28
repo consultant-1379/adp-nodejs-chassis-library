@@ -1,0 +1,9 @@
+a {
+  text-decoration: unset;
+  cursor: auto;
+  -webkit-user-select: text;
+  -moz-select: text;
+  -ms-select: text;
+  user-select: text;
+  color: unset;
+}

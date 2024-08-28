@@ -1,0 +1,11 @@
+:host {
+  display: grid;
+  place-items: left;
+}
+
+.message,
+.reasons,
+.try {
+  font-size: 14pt; /* intentionally hardcoded like this with pt */
+  color: var(--text, #242424);
+}

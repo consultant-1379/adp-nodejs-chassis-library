@@ -1,0 +1,6 @@
+:host {
+  display: block;
+}
+.content_wrap {
+  padding: var(--space-large);
+}

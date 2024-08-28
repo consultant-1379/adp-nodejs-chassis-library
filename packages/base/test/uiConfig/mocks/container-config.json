@@ -1,0 +1,9 @@
+{
+  "useHttps": true,
+  "appName": "Dummy app",
+  "logger": {
+    "settings": {
+      "enabled": true
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "apps": [
+    {
+      "displayName": "Domain App 1",
+      "descriptionLong": "This is a domain specific app",
+      "version": "1.0.0",
+      "type": "web-client",
+      "url": "domain-app-1",
+      "tags": ["webapp"],
+      "specification": "domain-app-1/spec.json",
+      "groupNames": ["domain-group-1"]
+    }
+  ],
+  "composs": [
+    {
+      "name": "component-1",
+      "displayName": "Component entities",
+      "descriptionLong": "Component entities for MongoDB",
+      "type": "json",
+      "specification": "component-1/spec.json"
+    }
+  ],
+  "groups": [
+    {
+      "name": "domain-group-1",
+      "version": "0.1.0",
+      "descriptionLong": "Domain applications",
+      "type": "apps"
+    }
+  ]
+}

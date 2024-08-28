@@ -1,0 +1,18 @@
+body {
+  background-color: var(--layer2, #fafafa);
+  color: var(--text);
+}
+
+eui-container eui-icon {
+  --icon-color: var(--white, #ffffff);
+  --icon-size: 21px;
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+}
+
+.app-logo eui-icon {
+  margin-right: 5px;
+}

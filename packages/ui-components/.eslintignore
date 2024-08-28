@@ -1,0 +1,4 @@
+coverage/**
+testReport/**/*
+build/**
+node_modules/**

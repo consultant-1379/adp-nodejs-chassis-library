@@ -1,0 +1,16 @@
+eui-button:hover > .icon-container > eui-icon {
+  --icon-color: var(--btn-secondary-hover-text, #fff);
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+}
+
+.label-icon {
+  margin-top: -2px;
+}
+
+.item-icon {
+  margin-top: -2px;
+}

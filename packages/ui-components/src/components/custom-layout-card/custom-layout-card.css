@@ -1,0 +1,146 @@
+:host([selected]) .eui__card {
+  border: 1px solid rgba(106, 106, 106, 0.25);
+}
+
+:host(:hover) .eui__card {
+  border: 1px solid var(--card-color-border-hover, #6a6a6a);
+}
+
+:host(:focus) .eui__card {
+  border-color: var(--purple, #a56ebe);
+}
+
+:host(:focus) {
+  outline: none;
+}
+
+.titleIcon {
+  margin-left: 2px;
+  opacity: 0.7;
+  cursor: pointer;
+  vertical-align: top;
+}
+
+.eui__card {
+  padding: var(--space-large, 16px) 0;
+  border: 1px solid rgba(106, 106, 106, 0.25);
+}
+
+.eui__card__subtitle {
+  margin-top: var(--space-base, 8px);
+  font-size: var(--btn-font-size, 14px);
+  color: var(--gray-text, #6a6a6a);
+  display: inline-block;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: calc(var(--space-xl, 24px) + 4px);
+  padding-right: var(--space-large, 16px);
+}
+
+.eui__card__title {
+  color: var(--text, #242424);
+  font-size: var(--space-large, 16px);
+  display: contents;
+  align-items: center;
+  margin-right: var(--space-base, 8px);
+  word-break: break-word;
+  font-weight: var(--weight-medium, 500);
+  height: var(--space-xl, 24px);
+  max-width: calc(100% - 48px);
+}
+
+.eui__card__content {
+  color: var(--text, #242424);
+  padding-top: 0;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+}
+
+.eui__card__header {
+  padding-left: var(--space-small, 4px);
+  padding-right: var(--space-large, 16px);
+}
+
+.eui__card__header__left {
+  align-items: unset;
+}
+
+.eui__card__header__right {
+  opacity: 1;
+  flex: none;
+  text-align: right;
+  display: flex;
+  align-items: baseline;
+}
+
+.eui__card__header__right ::slotted(*) {
+  opacity: 1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.embedded_subtitle {
+  padding-left: var(--space-small, 4px);
+}
+
+.cardGrid {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+:host .cardGrid,
+:host(:hover) .cardGrid,
+:host(:hover:not([selected])) .cardGrid,
+:host(:focus) .cardGrid {
+  border: none;
+}
+
+:host([is-compact-view]) .eui__card {
+  padding: var(--space-base, 8px) 0;
+}
+
+:host([is-compact-view]) .eui__card__header {
+  display: flex;
+  align-items: center;
+}
+
+:host([is-compact-view]) .cardGrid {
+  padding-top: var(--space-large, 16px);
+}
+
+:host([is-compact-view]) .column:last-child {
+  width: calc(100% - 64px);
+}
+
+:host([is-compact-view]) .eui__card__header__left {
+  overflow: hidden;
+}
+
+:host([is-compact-view]) .eui__card__title {
+  max-width: 100%;
+}
+
+:host([is-compact-view]) .titleWithIcon {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+:host([is-compact-view]) .cardTitle {
+  overflow: hidden;
+  margin-right: 5px;
+}
+
+:host([is-compact-view]) .eui__card__title span {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

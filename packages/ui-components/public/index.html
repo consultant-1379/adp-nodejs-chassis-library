@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UI Components</title>
+    <script type="module">
+      import('@webcomponents/scoped-custom-element-registry');
+      import('es-module-shims');
+      // Import polyfill for firefox and safari
+      if (!window.URLPattern) {
+        import('urlpattern-polyfill');
+      }
+      import('prismjs');
+    </script>
+    <script type="importmap-shim">
+      {
+        "imports": {
+          "@eui/container": "/node_modules/@eui/container/index.js",
+          "@eui/theme": "/node_modules/@eui/theme/index.js",
+          "@eui/navigation-menu": "/node_modules/@eui/navigation-menu/index.js",
+
+          "lang-switcher": "/demo/overview/components/lang-switcher.js",
+          "component-view": "/demo/overview/components/component-view.js",
+          "main-page": "/demo/overview/apps/main-page.js"
+        }
+      }
+    </script>
+    <script type="module-shim">
+      import '@eui/container';
+      import { Theme, Icon } from '@eui/theme';
+      import { NavigationMenu } from '@eui/navigation-menu';
+      import LangSwitcher from 'lang-switcher';
+
+      Theme.register('eui-theme');
+      Icon.register('eui-icon');
+      NavigationMenu.register('eui-navigation-menu');
+      LangSwitcher.register('e-lang-switcher');
+    </script>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>
+    <eui-theme theme="dark" font-path="./node_modules/@eui/theme/dist/fonts/"></eui-theme>
+    <eui-container default-app="main-page" menu-open="true">
+      <div slot="system-left" class="app-logo">
+        <eui-icon name="econ"></eui-icon>
+        <span>Ericsson NodeJS Chassis Library UI Components</span>
+      </div>
+      <eui-navigation-menu
+        searchable="true"
+        slot="app-navigation"
+        show="true"
+      ></eui-navigation-menu>
+      <eui-system-bar-actions>
+        <e-lang-switcher></e-lang-switcher>
+      </eui-system-bar-actions>
+    </eui-container>
+
+    <script>
+      const themeComponent = document.querySelector('eui-theme');
+      if (localStorage.getItem('theme')) {
+        themeComponent.theme = localStorage.getItem('theme');
+      } else {
+        localStorage.setItem('theme', 'dark');
+      }
+      const body = document.querySelector('body');
+      body.addEventListener('eui-theme-change', (event) => {
+        themeComponent.theme = event.detail.theme;
+        localStorage.setItem('theme', event.detail.theme);
+      });
+    </script>
+
+    <script>
+      /* load the config files into the Container */
+      const loadConfig = async () => {
+        /* fetch config.json (public config file) */
+        const getJSON = (response) => response.json();
+        const config = await fetch('./config.json').then(getJSON);
+        const euiContainer = document.querySelector('eui-container');
+        euiContainer.metaData = config;
+      };
+      loadConfig();
+    </script>
+  </body>
+</html>

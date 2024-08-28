@@ -1,0 +1,46 @@
+{
+  "apps": [
+    {
+      "displayName": "Call Browser",
+      "route": "/callbrowser/#callbrowser",
+      "version": "1.0.0",
+      "name": "call_browser",
+      "descriptionLong": "Provides insight into call sessions.",
+      "descriptionShort": "CB",
+      "groupNames": ["eea", "subscriber_troubleshooting"],
+      "childApps": []
+    },
+    {
+      "displayName": "Child",
+      "route": "www.test.com",
+      "version": "1.0.0",
+      "name": "child",
+      "descriptionLong": "Provides insight into call sessions.",
+      "descriptionShort": "CB",
+      "type": "external",
+      "groupNames": ["eea", "subscriber_troubleshooting"],
+      "childApps": []
+    }
+  ],
+  "groups": [
+    {
+      "displayName": "Ericsson Expert Analytics",
+      "version": "1.0.0",
+      "name": "eea",
+      "type": "product",
+      "descriptionLong": "Ericsson Expert Analytics (EEA) is a multi-vendor, customer-centric analytics product for mobile operators who want to capitalize on their network data."
+    },
+    {
+      "displayName": "Subscriber Troubleshooting",
+      "version": "1.0.0",
+      "name": "subscriber_troubleshooting",
+      "type": "category"
+    },
+    {
+      "displayName": "Network Analytics",
+      "version": "1.0.0",
+      "name": "network_analytics",
+      "type": "category"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://adp.ericsson.com/config.json",
+  "description": "Simple config.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "The semantic version of this schema. Should be in semantic version.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "serviceName": {
+      "description": "An identifier uniquely identifying the service.",
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "description": {
+      "description": "Extra information.",
+      "type": "string",
+      "maxLength": 512
+    },
+    "additionalInformation": {
+      "description": "Additional fault information as a JSON object",
+      "type": "object"
+    }
+  },
+  "required": ["version", "serviceName"],
+  "additionalProperties": false
+}
